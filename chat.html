@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <title>&#128172 ARPANETOS CHAT &#128172 </title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding-bottom: 100px;
+      background-color: #aeeaf8; 
+      color: black;
+    }
+
+    #chatContainer {
+      width: 100%;
+      max-width: 160vh;
+      margin: auto;
+      padding-top: 10px;
+    }
+
+    #messageArea {
+      overflow: auto;
+      height: 70vh;
+      max-width: 700vh;
+      border: 1px solid #b3e4f9;
+      padding: 10px;
+      margin-bottom: 10px;
+      background-color: #b3e4f9; 
+    }
+
+    #inputArea {
+      position: fixed;
+      bottom: 10px;
+      left: 0;
+      width: 100%;
+      padding: 10px 0;
+      background-color: #e6fffd; 
+      text-align: center;
+    }
+
+    #usernameInput {
+      margin-right: 13px;
+      width: 12%;
+      border: 1px solid #f9fdfc;
+      padding: 15px;
+      margin: 0 auto;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      box-shadow: 2px 2px 5px rgba(15, 4, 228, 0.2);
+      background-color: #ffffff; 
+      color: black;
+    }
+
+    #messageInput {
+      width: 50%;
+      margin-right: 10px;
+      background-color: #f9fdff;
+      border: 1px solid #eaf2f8;
+      padding: 15px;
+      margin: 0 auto;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      box-shadow: 2px 2px 5px rgba(15, 4, 228, 0.2);
+      color: black; 
+    }
+
+    #sendButton {
+      width: 8%;
+      margin-right: 10px;
+      background: linear-gradient(180deg, #afdaef 0%, #a3d5ee 49%, #9ecfe8 50%, #afdaef 100%);
+      border: 1px solid #d5f5ef;
+      padding: 15px;
+      margin: 0 auto;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      box-shadow: 2px 2px 5px rgba(15, 4, 228, 0.2);
+      color: black; 
+    }
+
+    #charCount {
+      margin-top: 5px;
+      color: black; 
+    }
+
+    .message {
+      margin-bottom: 5px;
+    }
+
+    .image-container {
+      text-align: center;
+    }
+
+    .image-preview {
+      max-width: 40%;
+      max-height: 40%;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+
+    a {
+      display: block;
+      margin-top: 5px;
+    }
+
+    #themeButton {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      width: 8%;
+      margin-right: 10px;
+      background: linear-gradient(180deg, #afeaef 0%, #a8f7fe 49%, #a8f7fe 50%, #a8f7fe 100%);
+      border: 1px solid #d5f5ef;
+      padding: 15px;
+      margin: 0 auto;
+      margin-bottom: 20px;
+      border-radius: 20px;
+      box-shadow: 2px 2px 5px rgba(99, 197, 254, 0.2);
+    }
+
+    h1 {
+      font-size: 50px;
+      font-family: 'Noto Serif Display';
+      background: linear-gradient(45deg, #1cb3cb, #79e9fa);
+      -webkit-background-clip: text;
+      color: transparent;
+      text-align: center;
+      margin-top: 1px;
+    }
+
+    .message-box {
+      background-color: #f6f6f6;
+      border: 1px solid #f6f6f6;
+      max-width: 85%;
+      padding: 5px;
+      margin: 0 auto;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .username {
+      display: block;
+      color: #172df0;
+      font-family: serif;
+      font-size: 15pt;
+      margin-bottom: 3px;
+      font-weight: bold;
+    }
+
+    .timestamp {
+      float: right;
+      font-size: 80%;
+      margin-top: -18px;
+      color: #89c7f3;
+    }
+
+    .message-image {
+      max-width: 100%;
+      height: auto;
+      border-radius: 5px;
+    }
+
+  
+    .message-box.dark-mode {
+      background-color: #001F3F;
+      color: #ffffff; 
+      box-shadow: 2px 2px 5px rgba(36, 32, 105, 0.2); 
+    }
+
+
+    .username.dark-mode {
+      color: #f6ff73; 
+    }
+
+
+#inputArea.dark-mode {
+  background-color: #001F3F; 
+  color: #ffffff; 
+  box-shadow: 2px 2px 5px rgba(36, 32, 105, 0.2); 
+}
+
+
+#messageArea.dark-mode {
+  background-color: #414F76;
+  box-shadow: 2px 2px 5px rgba(36, 32, 105, 0.2); 
+}
+  </style>
+</head>
+<body>
+  <div id="chatContainer">
+    <h1>ARPANETOS CHAT &#128172 </h1>
+    <div id="usernameArea"></div>
+    <div id="messageArea" class="dark-mode"></div>
+    <div id="inputArea" class="dark-mode">
+      <input id="usernameInput" type="text" placeholder="Nombre/Usuario/Apodo">
+      <input id="messageInput" type="text" placeholder="Escribe un mensaje" oninput="updateCharCount()" maxlength="140">
+      <button id="sendButton" onclick="sendMessage()">Enviar</button>
+      <div id="charCount">140</div>
+    </div>
+    <button id="themeButton" onclick="changeTheme()">Cambiar Tema</button>
+  </div>
+  <script>
+    let darkTheme = localStorage.getItem('theme') === 'dark';
+    applyTheme();
+
+    async function sendMessage() {
+      const username = document.getElementById('usernameInput').value;
+      const message = document.getElementById('messageInput').value;
+      if (username && message) {
+        const url = 'https://chat.arpanetos.lol/messages';
+        const options = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ username, message })
+        };
+        const response = await fetch(url, options);
+        if (response.ok) {
+          createMessage(username, message, new Date().toLocaleString());
+          document.getElementById('messageInput').value = '';
+          updateCharCount();
+        }
+      } else {
+        alert('Por favor, ingresa tu nombre y un mensaje.');
+      }
+    }
+
+    function checkInput(e) {
+      if (e.key === 'Enter') {
+        sendMessage();
+      }
+    }
+
+    async function fetchMessages() {
+      const url = 'https://chat.arpanetos.lol/messages';
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Network response was not ok.');
+
+        const messages = await response.json();
+        const messageArea = document.getElementById('messageArea');
+        messageArea.innerHTML = '';
+
+        messages.forEach(({ username, message, created_at }) => {
+          createMessage(username, message, created_at);
+        });
+
+        messageArea.scrollTop = messageArea.scrollHeight;
+      } catch (error) {
+        console.error('There has been a problem with your fetch operation:', error);
+      }
+    }
+
+    function updateCharCount() {
+      const messageInput = document.getElementById('messageInput');
+      const charCount = document.getElementById('charCount');
+      const remaining = 140 - messageInput.value.length;
+      charCount.textContent = `${remaining}/140`;
+    }
+
+    function changeTheme() {
+      darkTheme = !darkTheme;
+      localStorage.setItem('theme', darkTheme ? 'dark' : 'light');
+      applyTheme();
+    }
+
+    function applyTheme() {
+      const bgColor = darkTheme ? '#001f3f' : '#e6fffd';
+      const textColor = darkTheme ? 'white' : 'black';
+      document.body.style.backgroundColor = bgColor;
+      document.body.style.color = textColor;
+      document.getElementById('messageInput').style.backgroundColor = darkTheme ? '#555' : 'white';
+      document.getElementById('messageInput').style.color = textColor;
+      document.getElementById('charCount').style.color = textColor;
+      document.getElementById('usernameInput').style.backgroundColor = darkTheme ? '#555' : 'white';
+      document.getElementById('usernameInput').style.color = textColor;
+
+  
+
+      const elementsToApplyDarkMode = document.querySelectorAll('.dark-mode');
+      elementsToApplyDarkMode.forEach((element) => {
+        if (darkTheme) {
+          element.classList.add('dark-mode');
+        } else {
+          element.classList.remove('dark-mode');
+        }
+      });
+
+      const themeButtonText = darkTheme ? 'Oscuro' : 'Claro';
+      document.getElementById('themeButton').textContent = `Tema (${themeButtonText})`;
+    }
+
+    function createMessage(username, message, createdAt) {
+      const messageArea = document.getElementById('messageArea');
+      const messageBox = document.createElement('div');
+      messageBox.classList.add('message-box');
+      if (darkTheme) {
+        messageBox.classList.add('dark-mode');
+      }
+
+      const usernameSpan = document.createElement('span');
+      usernameSpan.textContent = username;
+      usernameSpan.classList.add('username');
+      if (darkTheme) {
+        usernameSpan.classList.add('dark-mode');
+      }
+      messageBox.appendChild(usernameSpan);
+
+      const messageContent = document.createElement('p');
+      messageContent.textContent = message;
+      messageBox.appendChild(messageContent);
+
+      const timestampSpan = document.createElement('span');
+      timestampSpan.textContent = createdAt;
+      timestampSpan.classList.add('timestamp');
+      messageBox.appendChild(timestampSpan);
+
+      // IMAGEN
+      const imageContainer = document.createElement('div');
+      imageContainer.classList.add('image-container');
+      messageBox.appendChild(imageContainer);
+
+      const imageLinkMatch = message.match(/(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/g);
+      if (imageLinkMatch) {
+        const imagePreview = document.createElement('img');
+        imagePreview.src = imageLinkMatch[0];
+        imagePreview.classList.add('image-preview');
+        imageContainer.appendChild(imagePreview);
+
+        const imageLink = document.createElement('a');
+        imageLink.href = imageLinkMatch[0];
+        imageLink.textContent = 'Ver imagen completa';
+        imageContainer.appendChild(imageLink);
+      }
+
+      messageArea.insertBefore(messageBox, messageArea.firstChild);
+    }
+
+    setInterval(fetchMessages, 5000);
+
+    document.getElementById('messageInput').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+  </script>
+</body>
+</html>
